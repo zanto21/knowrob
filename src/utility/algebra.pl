@@ -57,9 +57,9 @@ transform_between([F,TgFrame, [T1x,T1y,T1z],Q1],
                   [RefFrame,TgFrame,TN,QN]) :-
   quaternion_inverse(Q2, Q2_inv),
   quaternion_multiply(Q1, Q2_inv, QN),
-  Diff_x is T2x - T1x,
-  Diff_y is T2y - T1y,
-  Diff_z is T2z - T1z,
+  Diff_x is T1x - T2x,
+  Diff_y is T1y - T2y,
+  Diff_z is T1z - T2z,
   quaternion_transform(Q1, [Diff_x,Diff_y,Diff_z], TN).
 
 %%
