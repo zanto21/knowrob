@@ -44,12 +44,32 @@ void TFLogger::store(const geometry_msgs::TransformStamped &ts)
 	bson_destroy(doc);
 }
 
+const geometry_msgs::TransformStamped tf_logger_fix_transform(const geometry_msgs::TransformStamped& in)
+{
+	if (in.child_frame_id.rfind("/",0) != 0
+		&& in.header.frame_id.rfind("/",0) != 0) {
+		return in;
+	} else {
+		geometry_msgs::TransformStamped out(in);
+		if (out.child_frame_id.rfind("/",0) == 0) {
+			out.child_frame_id.erase(0,1);
+		}
+		if (out.header.frame_id.rfind("/",0) == 0) {
+			out.header.frame_id.erase(0,1);
+		}
+		return out;
+	}
+}
+
 void TFLogger::callback(const tf::tfMessage::ConstPtr& msg)
 {
 	std::vector<geometry_msgs::TransformStamped>::const_iterator it;
 	for (it = msg->transforms.begin(); it != msg->transforms.end(); ++it)
 	{
-		const geometry_msgs::TransformStamped &ts = *it;
+		// some transforms have a / at the front, others don't.
+		// This call removes a preceding slash if it exists.
+		const geometry_msgs::TransformStamped &ts =
+			tf_logger_fix_transform(*it);
 		if(!ignoreTransform(ts)) {
 			store(ts);
 			// NOTE: IMPORTANT: we assign *ts* to its frame in memory
