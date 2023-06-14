@@ -190,21 +190,30 @@ tf_get_pose(Obj,PoseQuery,QS,FS) :-
 	-> scope_intersect(FS0,FS1,FS)
 	;  fail
 	).
-  
+
+% do not try to look up the parent of the map frame to improve get_world_pose cache misses
+map_frame(map).
+
+is_at_direct(ObjFrame,_PoseData,_QS,_FS) :-
+    atom(ObjFrame),
+    map_frame(ObjFrame),
+    !,
+    fail.
+
 %%
 is_at_direct(ObjFrame,PoseData,QS,FS) :-
 	% get local pose data and scope
 	tf_mem_get_pose(ObjFrame,PoseData,Since),
 	get_time(Now),
-	time_scope(=(Since),=(Now),FS),
+	time_scope(=(double(Since)),=(double(Now)),FS),
 	% make sure there is an overlap with the query scope
 	time_scope_data(QS,[QSince,QUntil]),
 	mng_strip_operator(QSince, _, QSince0),
 	mng_strip_operator(QUntil, _, QUntil0),
-	time_scope(QSince0,=(QUntil0),=(QS0)),
-	scope_intersect(FS,QS0,_),
+	time_scope(=(double(QSince0)),=(double(QUntil0)),QS0),
+	scope_intersect(FS,QS,_),
 	% skip other results in case the fact scope is a superscope of the query scope
-	(  subscope_of(QS,FS)
+	(  subscope_of(QS0,FS)
 	-> !
 	;  true
 	).
