@@ -53,14 +53,22 @@ public:
 	void store(const geometry_msgs::TransformStamped &ts);
 
 protected:
-	ros::Subscriber subscriber_;
-	ros::Subscriber subscriber_static_;
-	TFMemory &memory_;
+	// The ordering of the variables is important.
+	// Otherwise there will be a race condition.
+	// memory_ needs the db_name_ to be initialized
+	// and the subscribers need the memory_ to be initialized
+	// and subscriber_ needs topic_ to be initialized
+	// since they run on different threads, this doesn't happen
+	// all the time and not even on all devices
+	// and only if there is tf data published right when the logger is starting.
 	double vectorialThreshold_;
 	double angularThreshold_;
 	double timeThreshold_;
 	std::string db_name_;
 	std::string topic_;
+	TFMemory &memory_;
+	ros::Subscriber subscriber_;
+	ros::Subscriber subscriber_static_;
 
 	char buf_[16];
 	size_t keylen_;
