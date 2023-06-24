@@ -1,3 +1,4 @@
+
 :- module(utils_algebra,
     [ transform_multiply/3,         % +Transform1, +Transform2, -Product
       transform_between/3,          % +Transform1, +Transform2, -Relative
@@ -60,7 +61,7 @@ transform_between([F,TgFrame, [T1x,T1y,T1z],Q1],
   Diff_x is T1x - T2x,
   Diff_y is T1y - T2y,
   Diff_z is T1z - T2z,
-  quaternion_transform(Q1, [Diff_x,Diff_y,Diff_z], TN).
+  quaternion_transform(Q2, [Diff_x,Diff_y,Diff_z], TN).
 
 %%
 transform_interpolate(

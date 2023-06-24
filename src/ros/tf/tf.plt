@@ -172,6 +172,37 @@ test('tf_transform_pose3') :-
 	assert_true(number_similar(0.0001, Pose5, [2.0,1.4,1.32])).
 
 
+test('tf_transform_pose_and_half_rotate',
+	 [
+		 setup(tf_setup),
+		 cleanup(tf_cleanup)
+	 ]) :-
+	% TODO: this test needs refactoring to be
+	% in the same style as the other tests here.
+	test_pose_alex1(PoseAlex, Stamp),
+	test_pose_fred1(PoseFred, Stamp),
+	time_scope(=<(Stamp), >=(Stamp), QScope),
+	PoseMike = [world, [0.0,0.0,1.0], [0.0,0.0,1.0,0.0]],
+	test_set_pose(test:'Alex',PoseAlex,Stamp),
+	test_get_pose(test:'Alex',Stamp,PoseAlex),
+	test_set_pose(test:'Fred',PoseFred,Stamp),
+	test_get_pose(test:'Fred',Stamp,PoseFred),
+	test_set_pose(test:'Mike',PoseMike,Stamp),
+	test_get_pose(test:'Mike',Stamp,PoseMike),
+	% test_transform_pose doesn't check the numbers in the list
+	% because algebra.cpp doesn't check them, so i do it myself
+	tf_get_pose(test:'Alex', ['Fred', Pose1, _], QScope),
+	assert_true(number_similar(0.0001, Pose1, [0.0,1.0,0.0])),
+	tf_get_pose(test:'Fred', ['Alex', Pose2, _], QScope),
+	assert_true(number_similar(0.0001, Pose2, [0.0,-1.0,0.0])),
+	tf_get_pose(test:'Alex', [world, Pose3, _], QScope),
+	assert_true(number_similar(0.0001, Pose3, [2.0,1.4,2.32])),
+	tf_get_pose(test:'Mike', ['Alex', Pose4, _], QScope),
+	assert_true(number_similar(0.0001, Pose4, [-2.0,-1.4,-1.32])),
+	tf_get_pose(test:'Alex', ['Mike', Pose5, _], QScope),
+	assert_true(number_similar(0.0001, Pose5, [-2.0,-1.4,1.32])).
+
+
 %test('tf_is_at') :-
 %	test_pose_fred0(Pose0,Stamp0),
 %	assert_true(kb_call(
