@@ -56,12 +56,8 @@ transform_multiply([RefFrame,       F, [Lx,Ly,Lz], [LQx, LQy, LQz, LQw]],
 transform_between([F,TgFrame, [T1x,T1y,T1z],Q1],
                   [F,RefFrame,[T2x,T2y,T2z],Q2],
                   [RefFrame,TgFrame,TN,QN]) :-
-  quaternion_inverse(Q2, Q2_inv),
-  quaternion_multiply(Q1, Q2_inv, QN),
-  Diff_x is T1x - T2x,
-  Diff_y is T1y - T2y,
-  Diff_z is T1z - T2z,
-  quaternion_transform(Q2, [Diff_x,Diff_y,Diff_z], TN).
+    transform_invert([F,RefFrame,[T2x,T2y,T2z],Q2], Inverted),
+    transform_multiply(Inverted,[F,TgFrame, [T1x,T1y,T1z],Q1],[RefFrame,TgFrame,TN,QN]).
 
 %%
 transform_interpolate(
