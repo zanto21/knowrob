@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <package format="2">
   <name>knowrob</name>
   <version>2.0.0</version>
@@ -33,6 +32,8 @@
   <depend>urdf</depend>
   <depend>eigen</depend>
   <depend>libmongoc-dev</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
 
 
 </package>
