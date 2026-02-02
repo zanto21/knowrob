@@ -4,7 +4,7 @@
   <env name="KNOWROB_SETTINGS" value="$(arg knowrob_settings)" />
   
 
-  <param name="mongodb_uri" value="mongodb://neemReader:qEWRqc9UdN5TD7No7cjymUA8QEweNz@neem-3.informatik.uni-bremen.de:28015/neems" />
+  <param name="mongodb_uri" value="mongodb://127.0.0.1:27017" />
   
   <include file="$(find rosprolog)/launch/rosprolog.launch">
     <arg name="initial_package" default="knowrob" />
